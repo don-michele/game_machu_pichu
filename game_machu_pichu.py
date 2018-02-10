@@ -23,7 +23,8 @@ def choose_number_of_players():
 	print("The game will have " + str(players_nr) + " players!")
 	print()
 	print("Chosen number:", players_nr)
-	return players_nr
+	#return players_nr
+	return int(players_nr)
 
 def create_deck():
 
@@ -53,11 +54,27 @@ def get_card_info():
 	pachet.pop(carte)
 	print("Pachet final:", pachet)
 
-def first_card_split(players_nr):
+def get_player_list(human_player, players_nr):
+
+	player_list=[]
+	ai_name_list = ['Vasile', 'Silviu', 'Irina', 'Cosmin', 'Claudiu', 'Victor'] 
+	if human_player in ai_name_list:
+		ai_name_list.remove(human_player.capitalize())
+	player_list.append(human_player)
+	for i in range(players_nr - 1):
+		ai_player = random.choice(ai_name_list)
+		ai_index = ai_name_list.index(ai_player)
+		player_list.append(ai_player)
+		del ai_name_list[ai_index]
+	print(player_list)
+	return player_list
+
+
+def first_card_split(players_nr, player_list):
 
 	initial_hand = []
 	initial_card_nr = 5
-	players_nr = int(players_nr)
+	players_hands={}
 
 	for i in range(players_nr):
 		initial_hand.append([])
@@ -70,17 +87,37 @@ def first_card_split(players_nr):
 			initial_hand[player].append(card)
 			card_pack.pop(card)
 
-	for player in range(players_nr):
-		print("Player " + str(player+1) + " cards:", initial_hand[player])
+	hand_step = 0
+	for player in player_list:
+		players_hands[player] = initial_hand[hand_step]
+		hand_step += 1
+
+	for player in players_hands:
+		print(str(player) + "'s cards:", players_hands[player])
 
 	print("Cards left in deck:", card_pack)
 	#return initial_hand, card_pack
 		
+def get_player_order(player_list, players_nr):
+
+	order_of_players={}
+	for i in range(players_nr):
+		player_list_name = random.choice(player_list)
+		player_list_index = player_list.index(player_list_name)
+		order_of_players[i+1] = player_list_name
+		del player_list[player_list_index]
+	print(order_of_players)
+	return order_of_players
 
 def main():
 
 	players_nr = choose_number_of_players()
-	first_card_split(players_nr)
+	human_player = input('Please insert your name: ')
+	player_list = get_player_list(human_player, players_nr)
+	first_card_split(players_nr, player_list)
+	get_player_order(player_list, players_nr)
+	#human_player = input('Please insert your name: ')
+	#player_order(human_player, players_nr)
 
 main()
 
